@@ -3,6 +3,7 @@ import combat_engine.combatants as cbt
 import pytest
 
 input_character = {'name': 'TestChar1', 'strength': 7, 'dexterity': 11, 'endurance': 13}
+target = {'name': 'TargetCombatant', 'strength': 6, 'dexterity': 10, 'endurance': 12}
 
 
 @pytest.mark.parametrize('attribute,expected', input_character.items())
@@ -17,7 +18,8 @@ def test_Combatant(attribute, expected):
 
 
 def test_Combatant_has_hitpoints():
-    """Test that an instantiated Combatant has an attribute with correctly calculated hitpoints"""
+    """Test that an instantiated Combatant has an attribute with correctly
+    calculated hitpoints"""
     combatant = cbt.Combatant(**input_character)
     assert combatant.health == 31
 
@@ -51,5 +53,21 @@ def test_Combatant_has_attribute_dms(attribute, expected):
     (15, 3)
 ])
 def test_Combatant_calculate_modifier(value, expected):
-    print(value, cbt.Combatant.calculate_modifier(value))
     assert cbt.Combatant.calculate_modifier(value) == expected
+
+
+def test_Combatant_takes_minor_action_aim():
+    """Given a combatant, when taking an 'aim' minor action, then
+    the aim state is stored for calculating DMs, and action count is
+    updated"""
+    combatant = cbt.Combatant(**input_character)
+    tgt = cbt.Combatant(**target)
+    combatant.minor_action(cbt.aiming(combatant, tgt))
+    assert combatant.aim == 1
+    assert combatant.minor_action_count == 1
+    assert combatant.current_target == tgt
+
+
+def test_combatant_count_resetting():
+    """Given a combatant that has reached max number of minor actions per round,
+    when they try to take another action, block it until the round is reset"""

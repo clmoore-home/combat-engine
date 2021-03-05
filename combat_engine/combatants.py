@@ -15,18 +15,25 @@ class Combatant:
         self.str_modifier = self.calculate_modifier(self.strength)
         self.dex_modifier = self.calculate_modifier(self.dexterity)
         self.end_modifier = self.calculate_modifier(self.endurance)
-
+        self.aim = 0
+        self.minor_action_count = 0
 
     @staticmethod
     def calculate_modifier(value):
-        if value in range(0, 3):
-            return -2
-        if value in range(3, 6):
-            return -1
-        if value in range(6, 9):
-            return 0
-        if value in range(9, 12):
-            return 1
-        if value in range(12, 15):
-            return 2
-        return 3
+        return floor((value / 3) - 2)
+
+    def minor_action(self, action):
+        """Pass instance to action to set appropriate attribute"""
+        self.minor_action_count += 1
+        for key, value in action.items():
+            setattr(self, key, value)
+
+
+def aiming(combatant, target):
+    action = {}
+    action['aim'] = combatant.aim
+    action['current_target'] = target
+    if combatant.aim < 7:
+        action['aim'] = combatant.aim + 1
+    return action
+# Actions should all have the same format of returning a dictionary of attributes to set?
