@@ -29,6 +29,7 @@ class Combatant:
             setattr(self, key, value)
 
 
+# This should just be a method on the Combatant class; an aiming method
 def aiming(combatant, target):
     action = {}
     action['aim'] = combatant.aim

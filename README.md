@@ -22,14 +22,26 @@ Actions
 
 Initiative tracker
     - Add combatants in turn order
+    - Accounting for missed turns due to dodging
+    - Round tracking would be included here?
+    - Check the gamedev stack exchange for ideas.
+
+"Sides" tracker
+    - Keeps track of combatants belonging to different combat factions
+    - Just a dictionary of lists
+    - Could just be an attribute on the battlefield object
 
 Battlefield
     - Set number of combatants, use initiative tracker to keep tabs
     - Tracks actions that have occurred towards various combatants and collates the information for computer controlled combatants
+    - Round tracking here instead?
 
 Gear
     - Gear classes can be equipped to combatants
-    - Use a database for gear.
+    - Use a database for gear?
+    - Splits down to separate classes for Armor, Weapons, Peripherals
+    - Meta classes for base attributes like techlevel, damage, range (ABC library - Abstract Base Class)
+    - For repeated methods, you could define a super class that inherits from the meta, or mixins that the concretes inherit from in addition to the meta.
 
 Test environment
     - Console based run for testing mechanics
