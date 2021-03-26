@@ -16,25 +16,19 @@ class Combatant:
         self.dex_modifier = self.calculate_modifier(self.dexterity)
         self.end_modifier = self.calculate_modifier(self.endurance)
         self.aim = 0
+        self.current_target = None
         self.minor_action_count = 0
 
     @staticmethod
     def calculate_modifier(value):
         return floor((value / 3) - 2)
 
-    def minor_action(self, action):
-        """Pass instance to action to set appropriate attribute"""
+    def take_aim(self, target):
+        """Set aim count and target attributes"""
         self.minor_action_count += 1
-        for key, value in action.items():
-            setattr(self, key, value)
-
-
-# This should just be a method on the Combatant class; an aiming method
-def aiming(combatant, target):
-    action = {}
-    action['aim'] = combatant.aim
-    action['current_target'] = target
-    if combatant.aim < 7:
-        action['aim'] = combatant.aim + 1
-    return action
-# Actions should all have the same format of returning a dictionary of attributes to set?
+        match target:
+            case self.current_target:
+                self.aim += 1
+            case _:
+                self.current_target = target
+                self.aim = 1

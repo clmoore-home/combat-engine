@@ -2,8 +2,12 @@ import combat_engine.combatants as cbt
 
 import pytest
 
-input_character = {'name': 'TestChar1', 'strength': 7, 'dexterity': 11, 'endurance': 13}
-target = {'name': 'TargetCombatant', 'strength': 6, 'dexterity': 10, 'endurance': 12}
+input_character = {'name': 'TestChar1', 'strength': 7, 'dexterity': 11,
+    'endurance': 13}
+target = {'name': 'TargetCombatant', 'strength': 6, 'dexterity': 10,
+    'endurance': 12}
+target2 = {'name': 'TargetCombatant2', 'strength': 6, 'dexterity': 10,
+    'endurance': 12}
 
 
 @pytest.mark.parametrize('attribute,expected', input_character.items())
@@ -62,10 +66,25 @@ def test_Combatant_takes_minor_action_aim():
     updated"""
     combatant = cbt.Combatant(**input_character)
     tgt = cbt.Combatant(**target)
-    combatant.minor_action(cbt.aiming(combatant, tgt))
+    combatant.take_aim(tgt)
     assert combatant.aim == 1
     assert combatant.minor_action_count == 1
     assert combatant.current_target == tgt
+
+
+def test_Combatant_resets_aim_if_target_changes():
+    """Given a combatant, when taking aim at a new target, then the aim count is
+    reset."""
+    combatant = cbt.Combatant(**input_character)
+    tgt = cbt.Combatant(**target)
+    tgt2 = cbt.Combatant(**target2)
+    for _ in range(3):
+        combatant.take_aim(tgt)
+    assert combatant.aim == 3
+    assert combatant.current_target == tgt
+    combatant.take_aim(tgt2)
+    assert combatant.current_target == tgt2
+    assert combatant.aim == 1
 
 
 def test_combatant_count_resetting():
