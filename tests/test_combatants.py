@@ -107,3 +107,14 @@ def test_combatant_count_resetting():
         for _ in range(4):
             combatant.take_aim(tgt)
     assert combatant.actions == 0
+
+
+def test_Combatant_round_tracking():
+    """Given a combatant, when initialised, then round attribute starts at 0,
+    and increases when actions are depleted
+    """
+    combatant = cbt.Combatant(**input_character)
+    assert combatant.round == 0
+    for action in range(3):
+        combatant.deplete_action_count('minor')
+    assert combatant.round == 2

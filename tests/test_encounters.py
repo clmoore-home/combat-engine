@@ -5,11 +5,12 @@ import pytest
 from collections import namedtuple
 
 
-def combatant_fixture(name, dex, roll):
+def combatant_fixture(name, dex, roll, round=1):
     """Helper function that returns namedtuple to mimic
     combatant objects"""
     return namedtuple('Combatant', [
-        'name', 'dexterity', 'initiative_roll'])(name, dex, roll)
+        'name', 'dexterity',
+        'initiative_roll', 'round'])(name, dex, roll, round)
 
 
 player1 = combatant_fixture('Player1', 3, 6)
@@ -41,8 +42,33 @@ def test_add_combatant_requires_initiative_roll():
     them to an initiative instance without an initiative roll,
     then it fails with an exception"""
     with pytest.raises(ValueError):
-        initiative = initiative_setup([player_no_roll])
+        initiative_setup([player_no_roll])
 
 
-# What should the initiative tracker return for the order? Options:
-# 1.) A dictionary of combatants with players as keys and rolls
+def test_Initiative_order_method():
+    """Given Initiative instance with combatants, when order method is called,
+    then return the correct turn order"""
+    initiative = initiative_setup(all_players)
+    assert initiative.turn_order == [player2, player3, player1]
+
+
+def test_Initiative_order_method_handles_equal_rolls_with_dex_check():
+    """Given Initiative instance with combatants, when two cbts have equal
+    initiative rolls, then use dex for secondary sort"""
+    player4 = combatant_fixture('Player4', 12, 6)
+    initiative = initiative_setup([player1, player4, player2])
+    assert initiative.turn_order == [player2, player4, player1]
+
+
+def test_Initiative_combatants_check_round():
+    """Given Initiative instance with combatants, when it's time to take
+    a turn, Initiative checks round attribute on each cbtant and stores lowest
+    value on it's own attribute"""
+    player_bigger_round = combatant_fixture('BigRound', 15, 7, 2)
+    initiative = initiative_setup([player1, player_bigger_round])
+    assert initiative.round == 1
+
+
+def test_Initiative_restores_actions_on_round_change():
+    """Given a set of combatants, when everyone has the same round value,
+    they should all have the maximum number of actions available"""

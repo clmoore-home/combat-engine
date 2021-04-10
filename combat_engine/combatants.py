@@ -18,9 +18,7 @@ class Combatant:
         self.aim = 0
         self.current_target = None
         self.actions = 3
-        # the battlefield class will update the turn attribute
-        # for combatants as their turn completes
-        self.turn = 0
+        self.round = 0
 
     @staticmethod
     def calculate_modifier(value):
@@ -34,8 +32,10 @@ class Combatant:
         match action_type:
             case 'minor':
                 self.actions -= 1
+                self._set_round()
             case 'major':
                 self.actions -= 2
+                self._set_round() # DRY this up?
             case _:
                 raise ValueError('Action type not recognised')
 
@@ -48,3 +48,11 @@ class Combatant:
             case _:
                 self.current_target = target
                 self.aim = 1
+
+    def _set_round(self):
+        """Method used by Combatant to check/set the round
+        when depleting actions"""
+        if self.round == 0:
+            self.round = 1
+        if self.actions == 0:
+            self.round += 1
