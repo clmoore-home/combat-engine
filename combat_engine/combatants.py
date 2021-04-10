@@ -17,15 +17,31 @@ class Combatant:
         self.end_modifier = self.calculate_modifier(self.endurance)
         self.aim = 0
         self.current_target = None
-        self.minor_action_count = 0
+        self.actions = 3
+        # the battlefield class will update the turn attribute
+        # for combatants as their turn completes
+        self.turn = 0
 
     @staticmethod
     def calculate_modifier(value):
         return floor((value / 3) - 2)
 
+    def deplete_action_count(self, action_type):
+        """Deplete action count by one if action_type is minor,
+        by 2 if major."""
+        if self.actions == 0:
+            raise AttributeError('Out of actions for this round')
+        match action_type:
+            case 'minor':
+                self.actions -= 1
+            case 'major':
+                self.actions -= 2
+            case _:
+                raise ValueError('Action type not recognised')
+
     def take_aim(self, target):
         """Set aim count and target attributes"""
-        self.minor_action_count += 1
+        self.deplete_action_count('minor')
         match target:
             case self.current_target:
                 self.aim += 1

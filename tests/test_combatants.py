@@ -68,7 +68,7 @@ def test_Combatant_takes_minor_action_aim():
     tgt = cbt.Combatant(**target)
     combatant.take_aim(tgt)
     assert combatant.aim == 1
-    assert combatant.minor_action_count == 1
+    assert combatant.actions == 2
     assert combatant.current_target == tgt
 
 
@@ -78,15 +78,32 @@ def test_Combatant_resets_aim_if_target_changes():
     combatant = cbt.Combatant(**input_character)
     tgt = cbt.Combatant(**target)
     tgt2 = cbt.Combatant(**target2)
-    for _ in range(3):
+    for _ in range(2):
         combatant.take_aim(tgt)
-    assert combatant.aim == 3
+    assert combatant.aim == 2
     assert combatant.current_target == tgt
     combatant.take_aim(tgt2)
     assert combatant.current_target == tgt2
     assert combatant.aim == 1
 
 
+def test_Combatant_action_count_depletes():
+    """Given a Combatant, when taking a minor action, then their
+    count depletes by 1, and when taking a major action, count
+    depletes by two."""
+    combatant = cbt.Combatant(**input_character)
+    assert combatant.actions == 3
+    tgt = cbt.Combatant(**target)
+    combatant.take_aim(tgt)
+    assert combatant.actions == 2
+
+
 def test_combatant_count_resetting():
     """Given a combatant that has reached max number of minor actions per round,
     when they try to take another action, block it until the round is reset"""
+    combatant = cbt.Combatant(**input_character)
+    tgt = cbt.Combatant(**target)
+    with pytest.raises(AttributeError):
+        for _ in range(4):
+            combatant.take_aim(tgt)
+    assert combatant.actions == 0
