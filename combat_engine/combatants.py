@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from math import floor, ceil
+from math import floor
 
 
 @dataclass
