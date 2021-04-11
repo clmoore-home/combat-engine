@@ -1,3 +1,5 @@
+import random
+
 from dataclasses import dataclass
 from math import floor
 
@@ -24,6 +26,14 @@ class Combatant:
     def calculate_modifier(value):
         return floor((value / 3) - 2)
 
+    def roll_for_initiative(self, roll=None):
+        """Set initiative_roll attribute on instance"""
+        if hasattr(self, 'initiative_roll'):
+            return self.initiative_roll
+        if not roll:
+            roll = sum((random.randint(1, 6), random.randint(1, 6)))
+        self.initiative_roll = roll
+
     def deplete_action_count(self, action_type):
         """Deplete action count by one if action_type is minor,
         by 2 if major."""
@@ -35,7 +45,7 @@ class Combatant:
                 self._set_round()
             case 'major':
                 self.actions -= 2
-                self._set_round() # DRY this up?
+                self._set_round()  # DRY this up?
             case _:
                 raise ValueError('Action type not recognised')
 

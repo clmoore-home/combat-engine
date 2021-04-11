@@ -118,3 +118,29 @@ def test_Combatant_round_tracking():
     for action in range(3):
         combatant.deplete_action_count('minor')
     assert combatant.round == 2
+
+
+def test_Combatant_set_initiative_roll():
+    """Given a combatant, when the initiative_roll method is called,
+    then the value is available as an attribute on the combatant"""
+    combatant = cbt.Combatant(**input_character)
+    combatant.roll_for_initiative(6)
+    assert combatant.initiative_roll == 6
+
+
+def test_Combatant_set_initiative_roll_without_input_roll():
+    """Given a combatant, when the roll_for_initiative method is called without
+    a roll value, then the value is calculated from the sum of two calls
+    to random"""
+    combatant = cbt.Combatant(**input_character)
+    combatant.roll_for_initiative()
+    assert combatant.initiative_roll
+
+
+def test_Combatant_sets_initiative_roll_once_per_instance():
+    """Given a combatant, when trying to roll_for_initiative and it's
+    already set, roll_for_initiative fails with error"""
+    combatant = cbt.Combatant(**input_character)
+    combatant.roll_for_initiative(6)
+    combatant.roll_for_initiative(12)
+    assert combatant.initiative_roll == 6
