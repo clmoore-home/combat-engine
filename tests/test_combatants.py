@@ -144,3 +144,17 @@ def test_Combatant_sets_initiative_roll_once_per_instance():
     combatant.roll_for_initiative(6)
     combatant.roll_for_initiative(12)
     assert combatant.initiative_roll == 6
+
+
+@pytest.mark.skip  # Considering a custom logger at the encounter level.
+def test_Combatant_action_log():
+    """Given a combatant, when querying action_log, then a list of
+    actions taken formatted as strings is available"""
+    combatant = cbt.Combatant(**input_character)
+    tgt = cbt.Combatant(**target)
+    combatant.roll_for_initiative(6)
+    combatant.take_aim(tgt)
+    assert combatant.action_log.values() == [
+        f'{combatant.name} rolled for initiative (6)'
+        f'{combatant.name} took aim at {target.name}'
+    ]
