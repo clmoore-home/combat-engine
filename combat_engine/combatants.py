@@ -28,11 +28,19 @@ class Combatant:
 
     def roll_for_initiative(self, roll=None):
         """Set initiative_roll attribute on instance"""
-        if hasattr(self, 'initiative_roll'):
-            return self.initiative_roll
-        if not roll:
-            roll = sum((random.randint(1, 6), random.randint(1, 6)))
-        self.initiative_roll = roll
+        # wrap this in try/except while/true, rather than using hasattr
+        while True:
+            try:
+                return self.initiative_roll
+            except AttributeError:
+                if not roll:
+                    roll = sum((random.randint(1, 6), random.randint(1, 6)))
+                self.initiative_roll = roll
+        # if hasattr(self, 'initiative_roll'):
+        #     return self.initiative_roll
+        # if not roll:
+        #     roll = sum((random.randint(1, 6), random.randint(1, 6)))
+        # self.initiative_roll = roll
 
     def deplete_action_count(self, action_type):
         """Deplete action count by one if action_type is minor,
