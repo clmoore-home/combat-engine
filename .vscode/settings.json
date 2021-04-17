@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/cmoore/.pyenv/versions/combat-engine3.10/bin/python",
+    "python.pythonPath": "/home/cmoore/.pyenv/versions/3.10.0a6/envs/combat_engine/bin/python",
     "python.testing.pytestArgs": [
         "tests"
     ],
